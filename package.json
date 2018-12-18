@@ -1,0 +1,20 @@
+{
+  "name": "smart-testing",
+  "version": "1.0.0",
+  "description": "A npm package that deals with a project before running.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RaquelMao/smart-testing.git"
+  },
+  "keywords": [],
+  "author": "Raquel Mao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RaquelMao/smart-testing/issues",
+  },
+  "homepage": "https://github.com/RaquelMao/smart-testing#readme"
+}

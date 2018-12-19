@@ -4,6 +4,7 @@
   "description": "A npm package that deals with a project before running.",
   "main": "index.js",
   "scripts": {
+    "build": "babel ./src -d ./lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -14,7 +15,11 @@
   "author": "Raquel Mao",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RaquelMao/smart-testing/issues",
+    "url": "https://github.com/RaquelMao/smart-testing/issues"
   },
-  "homepage": "https://github.com/RaquelMao/smart-testing#readme"
+  "homepage": "https://github.com/RaquelMao/smart-testing#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
 }

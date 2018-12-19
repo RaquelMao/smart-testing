@@ -6,11 +6,30 @@ const path = require('path');
 const iconv = require('iconv-lite');
 
 class Precompiler {
-  constructor(filePath, { fuzzy, platform, include}) {
+  constructor(filePath, { fuzzy, platform, include }) {
     this.fuzzy = fuzzy;
     this.platform = platform;
     this.filePath = filePath;
     this.includes = include;
+  }
+
+
+  /**
+   * 筛选头文件
+   * @param {String} filePath
+   * @return {Promise}
+   */
+  static filerHeader(filePath) {
+    return new Promise((resolve, reject) => {
+      fs.stat(filePath)
+        .then((stats) => {
+          if (stats.isFile()) {
+            resolve(path.extname(filePath) === '.h' || path.extname(filePath) === '.H');
+          }
+          resolve(stats.isDirectory());
+        })
+        .catch(reject);
+    });
   }
 
   /**
@@ -24,9 +43,11 @@ class Precompiler {
       fs.stat(filePath)
         .then((stats) => {
           if (stats.isDirectory()) {
-            return fs.copy(filePath, output, { overwrite: true, filter: this.filerHeader });
+            return fs.copy(filePath, output, { overwrite: true, filter: Precompiler.filerHeader });
           }
-          return Promise.reject({ escape: true });
+          const notError = new Error();
+          notError.escape = true;
+          return Promise.reject(notError);
         })
         .then(() => fs.readdir(filePath))
         .then((files) => {
@@ -39,25 +60,7 @@ class Precompiler {
         .then(resolve)
         .catch((err) => {
           err.escape ? resolve() : reject(err);
-        })
-    })
-  }
-
-  /**
-   * 筛选头文件
-   * @param {String} filePath
-   * @return {Promise}
-   */
-  filerHeader(filePath) {
-    return new Promise((resolve, reject) => {
-      fs.stat(filePath)
-        .then((stats) => {
-          if(stats.isFile()) {
-            resolve(path.extname(filePath) === '.h' || path.extname(filePath) === '.H');
-          }
-          resolve(stats.isDirectory());
-        })
-        .catch(reject);
+        });
     });
   }
 
@@ -69,9 +72,7 @@ class Precompiler {
   addTranslatedProject(output) {
     return new Promise((resolve, reject) => {
       fs.copy(this.filePath, output)
-        .then(() => {
-          return this.translateProject(output);
-        })
+        .then(() => this.translateProject(output))
         .then(resolve)
         .catch(reject);
     });
@@ -89,9 +90,7 @@ class Precompiler {
           if (stats.isFile()) {
             return this.translateFile(filePath).then(resolve).catch(reject);
           }
-          if(stats.isDirectory()) {
-            return fs.readdir(filePath);
-          }
+          return fs.readdir(filePath);
         })
         .then((files) => {
           const promises = files.map((file) => {
@@ -102,7 +101,7 @@ class Precompiler {
         })
         .then(resolve)
         .catch(reject);
-    })
+    });
   }
 
   /**
@@ -120,7 +119,7 @@ class Precompiler {
             contentTranslated = content.replace(/\\/g, '/');
           }
           if (this.platform === 'Windows') {
-            contentTranslated = content.replace(/\//g,'\\');
+            contentTranslated = content.replace(/\//g, '\\');
             contentTranslated = contentTranslated.replace(/\\(\*)/g, '/*');
             contentTranslated = contentTranslated.replace(/(\*)\\/g, '*/');
           }
@@ -128,7 +127,7 @@ class Precompiler {
         })
         .then(resolve)
         .catch(reject);
-    })
+    });
   }
 
   /**
@@ -139,7 +138,7 @@ class Precompiler {
   addCustomIncludes(includesPath) {
     return new Promise((resolve, reject) => {
       this.includes.forEach((include) => {
-        fs.copy(include, includesPath, { overwrite: true, filter: this.filerHeader })
+        fs.copy(include, includesPath, { overwrite: true, filter: Precompiler.filerHeader })
           .then(resolve)
           .catch(reject);
       });
@@ -170,13 +169,9 @@ class Precompiler {
         })
         .then(() => this.addTranslatedProject(projectPath))
         .then(resolve)
-        .catch((error) => {
-          console.log(error);
-          reject(error);
-        })
+        .catch(reject);
     });
   }
-
 }
 
 /**

@@ -4,7 +4,8 @@
   "description": "A npm package that deals with a project before running.",
   "main": "index.js",
   "scripts": {
-    "build": "babel ./src -d ./lib",
+    "build": "npm run lint && babel ./src -d ./lib",
+    "lint": "eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +21,15 @@
   "homepage": "https://github.com/RaquelMao/smart-testing#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "babel-eslint": "^8.2.6",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.10.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  },
+  "dependencies": {
+    "fs-extra": "^7.0.1",
+    "iconv-lite": "^0.4.24",
+    "path": "^0.12.7"
   }
 }

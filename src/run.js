@@ -11,6 +11,7 @@ function main() {
   // 命令行参数解析
   program
     .usage('[options] <file/directory ...>')
+    .option('--empty', 'Empty your output path before pretreat project')
     .option(
       '-I, --include <array>',
       'Set include directories, separate by comma(,)',
@@ -30,8 +31,15 @@ function main() {
   const includes = program.include;
   const platform = program.platform;
   const fuzzy = program.fuzzy;
+  const empty = program.empty;
 
   fs.ensureDir(output)
+    .then(() => {
+      if (empty) {
+        return fs.emptyDir(output)
+      }
+      return Promise.resolve();
+    })
     .then(() => {
       if (fuzzy) {
         return pretreat.fuzzy(filePath, output);

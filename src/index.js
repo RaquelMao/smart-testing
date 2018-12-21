@@ -8,11 +8,12 @@ const addFuzzyIncludes = require('./fuzzy-includes');
 const addCustomIncludes = require('./custom-includes');
 
 class Pretreater {
-  constructor(filePath, { fuzzy, platform, include }) {
+  constructor(filePath, { fuzzy, platform, include }, output) {
     this.fuzzy = fuzzy;
     this.platform = platform;
     this.filePath = filePath;
     this.includes = include;
+    this.output = output;
   }
 
   /**
@@ -57,13 +58,13 @@ class Pretreater {
 
   /**
    * 创建预处理文件夹,并进行预处理操作
-   * @param {String} projectPath
    * @return {Promise}
    */
-  pretreatProject(projectPath) {
+  pretreatProject() {
     return new Promise((resolve, reject) => {
+      const output = path.join(this.output, path.basename(this.filePath));
       const filename = path.basename(this.filePath);
-      const includesPath = path.join(projectPath, `${filename}-includes`);
+      const includesPath = path.join(output, `${filename}-includes`);
       fs.ensureDir(includesPath)
         .then(() => {
           if (this.fuzzy) {
@@ -77,7 +78,7 @@ class Pretreater {
           }
           return Promise.resolve();
         })
-        .then(() => this.addTranslatedProject(projectPath))
+        .then(() => this.addTranslatedProject(output))
         .then(resolve)
         .catch(reject);
     });
@@ -95,9 +96,8 @@ function pretreat(project, config, output) {
   return new Promise((resolve, reject) => {
     fs.emptyDir(output)
       .then(() => {
-        const projectPath = path.join(output, path.basename(project));
-        const pretreater = new Pretreater(project, config);
-        return pretreater.pretreatProject(projectPath);
+        const pretreater = new Pretreater(project, config, output);
+        return pretreater.pretreatProject();
       })
       .then(resolve)
       .catch(reject);

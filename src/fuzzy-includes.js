@@ -4,11 +4,11 @@ const filterHeader = require('./utility');
 
 /**
  * 自动添加所需头文件环境
- * @param {String} filePath
- * @param {String} output
+ * @param {String} filePath 文件路径
+ * @param {String} output 输出依赖文件路径
  * @return {Promise}
  */
-function addFuzzyIncludes(filePath, output) {
+function addFuzzyFiles(filePath, output) {
   return new Promise((resolve, reject) => {
     fs.stat(filePath)
       .then((stats) => {
@@ -23,7 +23,7 @@ function addFuzzyIncludes(filePath, output) {
       .then((files) => {
         const promises = files.map((file) => {
           const fileDir = path.join(filePath, file);
-          return addFuzzyIncludes(fileDir, output);
+          return addFuzzyFiles(fileDir, output);
         });
         return Promise.all(promises);
       })
@@ -34,4 +34,21 @@ function addFuzzyIncludes(filePath, output) {
   });
 }
 
-module.exports = addFuzzyIncludes;
+/**
+ * 设置依赖文件路径
+ * @param filePath 文件路径
+ * @param output 输出文件路径
+ * @returns {Promise<any>}
+ */
+function setFuzzyPath(filePath, output) {
+  return new Promise((resolve, reject) => {
+    const filename = path.basename(filePath);
+    const includesPath = path.join(output, `${filename}-includes`);
+    fs.ensureDir(includesPath)
+      .then(() => addFuzzyFiles(filePath, includesPath))
+      .then(resolve)
+      .catch(reject);
+  });
+}
+
+module.exports = setFuzzyPath;

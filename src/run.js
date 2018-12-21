@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const program = require('commander');
+const fs = require('fs-extra');
 const pretreat = require('./index');
 
 /**
@@ -23,7 +24,28 @@ function main() {
   if (program.args.length > 1) {
     console.log('Read only the first file path');
   }
-  pretreat(program.args[0], program, program.output)
+
+  const filePath = program.args[0];
+  const output = program.output;
+  const includes = program.include;
+  const platform = program.platform;
+  const fuzzy = program.fuzzy;
+
+  fs.ensureDir(output)
+    .then(() => {
+      if (fuzzy) {
+        return pretreat.fuzzy(filePath, output);
+      }
+      return Promise.resolve();
+    })
+    .then(() => {
+      if (platform) {
+        return pretreat.custom(filePath, includes, output);
+      }
+      return Promise.resolve();
+    })
+    .then(() => fs.copy(filePath, output))
+    .then(() => pretreat.translate(output, platform))
     .then(() => {
       console.log('done');
     })

@@ -1,3 +1,7 @@
+/**
+ * 设置依赖文件
+ */
+
 const fs = require('fs-extra');
 const path = require('path');
 const filterHeader = require('./utility');

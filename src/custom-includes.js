@@ -1,6 +1,10 @@
+/**
+ * 设置自定义依赖文件
+ */
+
+const path = require('path');
 const fs = require('fs-extra');
 const filterHeader = require('./utility');
-const path = require('path');
 
 /**
  * 添加自定义依赖文件

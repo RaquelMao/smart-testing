@@ -1,3 +1,7 @@
+/**
+ * 使用函数模块
+ */
+
 const fs = require('fs-extra');
 const path = require('path');
 

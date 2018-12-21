@@ -1,6 +1,6 @@
 {
   "name": "smart-testing",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A npm package that deals with a project before running.",
   "main": "src/index.js",
   "scripts": {

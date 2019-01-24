@@ -1,0 +1,25 @@
+SSSSSS 
+
+#include "a/b/c"
+#include "a/b/c"
+mvn clean -U package -P qa -Dmaven.test.skip=True
+
+cd target
+
+scp SmartUnitWeb-qa-0.0.1-SNAPSHOT.war smartunit@192.168.0.106:~/opt/smartunit
+
+
+
+
+
+
+ssh smartunit@192.168.0.170
+
+cd opt/smartunit/data
+
+sh runweb.sh
+
+
+
+
+"defaultIncludes": "/usr/lib/gcc/x86_64-linux-gnu/5/include"

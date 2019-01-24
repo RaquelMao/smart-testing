@@ -12,5 +12,9 @@ module.exports = {
         'no-unused-expressions': ['error', { 'allowTernary': true }],
         // allow debugger during development
         'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    },
+    "plugins": ["jest"],
+    "env": {
+        "jest/globals": true
     }
 };

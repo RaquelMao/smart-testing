@@ -1,12 +1,12 @@
 /**
  * 进行项目预处理
  */
-const translate = require('./translate');
-const addFuzzy = require('./fuzzy-includes');
-const addCustom = require('./custom-includes');
+const { translate, fuzzy, custom } = require('./pretreat');
+const { copyFolder } = require('./utility');
 
 module.exports = {
   translate,
-  fuzzy: addFuzzy,
-  custom: addCustom,
+  fuzzy,
+  custom,
+  copyFolder,
 };
